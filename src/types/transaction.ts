@@ -1,12 +1,8 @@
-export type Expense = {
-  value: number
-  category: string
-  description?: string
+export type Trnasction = {
+  id: string
   valueType: string
-}
-
-export type Gain = {
   value: number
+  category?: string
   description?: string
-  valueType: string
+  createdAt: Date
 }
