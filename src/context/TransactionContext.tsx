@@ -1,39 +1,43 @@
 'use client'
-import { Gain, Expense } from "@/types/transaction";
-import { ReactNode, useContext, createContext, useState } from "react";
+import { Transaction } from "@/types/transaction";
+import { ReactNode, useContext, createContext, useState, useEffect } from "react";
 
 interface TransactionContextType {
-  expense: Expense[],
-  gain: Gain[],
-  addExpense: (transaction: Expense) => void,
+  transaction: Transaction[],
+  addTransaction: (transaction: Transaction) => void,
   cancelTransaction: () => void
-  addGain: (gain: Gain) => void
 }
 
 const TransactionContext = createContext<TransactionContextType | null>(null)
 
 export function TransactionProvider({ children }: {children: ReactNode}) {
 
-  const [expense, setExpense] = useState<Expense[]>([])
-  const [gain, setGain] = useState<Gain[]>([])
+  const [transaction, setTransaction] = useState<Transaction[]>([])
+  // const [gain, setGain] = useState<Gain[]>([])
 
-  function addExpense(expense: Expense) {
-    setExpense(prev => [...prev, expense])
-    console.log("gasto", expense)
-  }
+  useEffect(() => {
+    const stored = localStorage.getItem("transaction")
 
-  function addGain(gain: Gain) {
-    setGain(prev => [...prev, gain])
-    console.log("ganho", gain)
+    if(stored) {
+      setTransaction(JSON.parse(stored))
+    }
+  },[])
 
+  useEffect(() => {
+    localStorage.setItem("transaction", JSON.stringify(transaction))
+  },[transaction])
+
+  function addTransaction(transaction: Transaction) {
+    setTransaction(prev => [...prev, transaction])
+    console.log("gasto", transaction)
   }
 
   function cancelTransaction() {
-    return expense
+    return transaction
   }
 
   return (
-    <TransactionContext.Provider value={{gain, expense, addExpense, cancelTransaction, addGain}}>
+    <TransactionContext.Provider value={{transaction, addTransaction, cancelTransaction}}>
       {children}
     </TransactionContext.Provider>
   )
