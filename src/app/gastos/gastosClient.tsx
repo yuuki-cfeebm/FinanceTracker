@@ -1,63 +1,58 @@
 "use client"
 import { useTransaction } from "@/context/TransactionContext"
+import { categories } from "@/data/categories"
 import { Category } from "@/types/category"
 import { Car, CreditCard, GraduationCap, HeartPulse, Home, PartyPopper, Utensils } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import { FormEvent, useState } from "react"
 
-const category: Category[] = [
-  {id: "comida", name: "Comida", background:"bg-yellow-100" , color: "text-yellow-500", icon: Utensils},
-  {id: "transporte", name: "Transporte", background:"bg-blue-100" , color: "text-blue-500", icon: Car },
-  {id: "casa", name: "Casa", background:"bg-orange-100" , color: "text-orange-500", icon: Home},
-  {id: "saude", name: "Saúde", background:"bg-pink-100" , color: "text-pink-500", icon: HeartPulse},
-  {id: "educacao", name: "Educação", background:"bg-violet-100" , color: "text-violet-500", icon: GraduationCap},
-  {id: "lazer", name: "Lazer", background:"bg-green-100" , color: "text-green-500", icon: PartyPopper},
-  {id: "cartao", name: "Cartão", background:"bg-slate-100" , color: "text-slate-500", icon: CreditCard}
-]
-
-
 export default function GastosClient() {
 
-  const { expense, addExpense, addGain, cancelTransaction} = useTransaction()
+  const { transaction, addTransaction, cancelTransaction} = useTransaction()
   
   const [catSelected, setCatSelected] = useState<string>("")
   const [inputType, setInputType] = useState<"saida" | "entrada">("saida")
-  const [input, setInput] = useState<string>("")
+  const [input, setInput] = useState("")
   const [description, setDescription] = useState<string | undefined>(undefined)
 
   function handleSubmitForm(event: FormEvent) {
     event.preventDefault()
-    let value = Number(input.replace(",", "."))
+    const value = Number(input)
 
-    if(!input || !catSelected) {
-      alert("preencha os campos obrigatórios")
+    if(input === "" || isNaN(value)){
+      alert("Digite um valor válido")
+      return
     }
 
-    if(inputType == "saida") {
-      value = value - (value + value)
-      addExpense({
-        valueType: inputType,
-        value: value,
-        category: catSelected,
-        description: description
-      })
-    } else if(inputType == "entrada") {
-      addGain({
-        valueType: inputType,
-        value: value,
-        description: description
-      })
+    if(inputType == "entrada") {
+      if(!input) {
+        alert("Preencha todos os campos!")
+        return
+      }
+    } else if(inputType == "saida") {
+      if(!input || !catSelected) {
+        alert("preencha os campos obrigatórios")
+        return 
+      }
     }
+
+    addTransaction({
+      id: crypto.randomUUID(),
+      value: inputType == "saida" ? -value : value,
+      valueType: inputType,
+      category: inputType == "saida" ? catSelected : undefined,
+      description: description,
+      createdAt: new Date()
+    })
 
     setInput("")
     setDescription("")
     setCatSelected("")
-    
   }
 
   return(
-    <main className="flex flex-col items-center gap-12">
-      <h1 className="text-4xl">Registrar Gastos</h1>
+    <div className="flex flex-col items-center gap-12">
+      <h1 className="text-4xl pt-6">Registrar Gastos</h1>
       <form className="flex flex-col items-center w-2xl bg-white p-4 mx-auto rounded-xl gap-10">
         <div className="flex text-xl justify-center items-center gap-18 bg-gray-100 w-80 mx-auto relative px-10 py-2 z-1 border-b-2 border-gray-300 rounded-t-xl">
           <div className={`absolute w-36 h-10 bg-white opacity-50 rounded-xl transition ${inputType == "saida" ? "-translate-x-20" : "translate-x-20"}`}></div>
@@ -70,7 +65,9 @@ export default function GastosClient() {
         </div>
         <div className="flex justify-center">
           <input 
-            className="text-center py-2 text-2xl border-b-2 border-gray-200 w-52 outline-none focus:border-blue-400 transition" type="text" placeholder="Digite o valor"
+            type="number"
+            step="0.01"
+            className="text-center py-2 text-2xl border-b-2 border-gray-200 w-52 outline-none focus:border-blue-400 transition" placeholder="Digite o valor"
             onChange={(e) => setInput(e.target.value)}
             value={input}
           />
@@ -90,7 +87,7 @@ export default function GastosClient() {
               </label>
 
               <div className="flex flex-wrap gap-4 justify-center">
-                {category.map(cat => {
+                {categories.map(cat => {
                   const Icon = cat.icon
                   return (
                     <motion.button
@@ -99,7 +96,7 @@ export default function GastosClient() {
                       whileTap={{ scale: 0.95 }}
                       className={`flex items-center justify-center gap-2 w-40 h-12 rounded-xl 
                         ${cat.background} ${cat.color} font-bold cursor-pointer border-2
-                        ${catSelected === cat.id ? "border-gray-400" : "border-transparent"}
+                        ${catSelected === cat.id ? cat.color : "border-transparent"}
                       `}
                       onClick={() => setCatSelected(cat.id)}
                       type="button"
@@ -138,6 +135,6 @@ export default function GastosClient() {
           </button>
         </div>
       </form>
-    </main>
+    </div>
   )
 }
