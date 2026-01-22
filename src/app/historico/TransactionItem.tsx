@@ -23,8 +23,8 @@ export default function TransactionItem( { transaction }: TransactionItemProps) 
             {valueType === "saida" ? Icon && <Icon key={category} size={30}/> : <BanknoteArrowDown color="#4CAF50"/>}
           </div>
           <div className="flex flex-col items-end">
-            <span className="text-gray-500 text-lg">{new Date(createdAt).toLocaleDateString("pt-br")}</span>
-            <span className="text-gray-400">{new Date(createdAt).toLocaleTimeString("pt-br")}</span>
+            <span className="text-gray-600 text-lg">{new Date(createdAt).toLocaleDateString("pt-br")}</span>
+            <span className="text-gray-500">{new Date(createdAt).toLocaleTimeString("pt-br")}</span>
           </div>
         </div>
       </div>
