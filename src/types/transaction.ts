@@ -1,4 +1,4 @@
-export type Trnasction = {
+export type Transaction = {
   id: string
   valueType: string
   value: number
