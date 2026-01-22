@@ -29,9 +29,9 @@ export default function RootLayout({
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased bg-gray-100`}>
         <TransactionProvider>
           <Header />
-          <div className="max-w-7xl mx-auto p-4">  
+          <main className="max-w-7xl mx-auto p-4">  
             {children}
-          </div>
+          </main>
         </TransactionProvider>
       </body>
     </html>
