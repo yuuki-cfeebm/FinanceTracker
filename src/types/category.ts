@@ -5,5 +5,6 @@ export type Category = {
   name: string
   color: string
   background: string
+  border: string
   icon: LucideIcon
 } 
