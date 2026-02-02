@@ -1,14 +1,12 @@
 "use client"
 import { useTransaction } from "@/context/TransactionContext"
 import { categories } from "@/data/categories"
-import { Category } from "@/types/category"
-import { Car, CreditCard, GraduationCap, HeartPulse, Home, PartyPopper, Utensils } from "lucide-react"
 import { AnimatePresence, motion } from "motion/react"
 import { FormEvent, useState } from "react"
 
 export default function GastosClient() {
 
-  const { transaction, addTransaction, cancelTransaction} = useTransaction()
+  const { addTransaction, cancelTransaction} = useTransaction()
   
   const [catSelected, setCatSelected] = useState<string>("")
   const [inputType, setInputType] = useState<"saida" | "entrada">("saida")
@@ -96,7 +94,7 @@ export default function GastosClient() {
                       whileTap={{ scale: 0.95 }}
                       className={`flex items-center justify-center gap-2 w-40 h-12 rounded-xl 
                         ${cat.background} ${cat.color} font-bold cursor-pointer border-2
-                        ${catSelected === cat.id ? cat.color : "border-transparent"}
+                        ${catSelected === cat.id ? cat.border : "border-transparent"}
                       `}
                       onClick={() => setCatSelected(cat.id)}
                       type="button"
