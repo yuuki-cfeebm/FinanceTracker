@@ -3,7 +3,7 @@ import Link from "next/link";
 export default function Header() {
   return(
     <header className="w-full bg-white shadow-md shadow-blue-100">
-      <div className="max-w-7xl mx-auto flex py-6 px-2 text-xl ">  
+      <div className="max-w-6xl mx-auto flex py-6 px-2 text-xl">  
         <div className="">FinanceTracker</div>
         <nav className="w-full flex items-center justify-center ">
           <ul className="flex gap-12 items-center text-gray-500">
