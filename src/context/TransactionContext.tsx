@@ -13,7 +13,6 @@ const TransactionContext = createContext<TransactionContextType | null>(null)
 export function TransactionProvider({ children }: {children: ReactNode}) {
 
   const [transaction, setTransaction] = useState<Transaction[]>([])
-  // const [gain, setGain] = useState<Gain[]>([])
 
   useEffect(() => {
     const stored = localStorage.getItem("transaction")
@@ -46,6 +45,6 @@ export function TransactionProvider({ children }: {children: ReactNode}) {
 export function useTransaction() {
   const context = useContext(TransactionContext)
   if(!context) throw new Error("Deve ser usado dentro de TransactionProvider")
-  return context
+    return context
 }
 
