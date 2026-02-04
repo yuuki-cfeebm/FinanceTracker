@@ -3,11 +3,6 @@ import { FieldLabel } from "@/components/ui/field";
 import FilterButton from "@/components/ui/FilterButton";
 import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
-
-import {
-  NativeSelect,
-  NativeSelectOption,
-} from "@/components/ui/native-select"
 import { ListFilter } from "lucide-react";
 import { useFilter } from "@/context/FilterContext";
 
@@ -46,7 +41,7 @@ export default function OrderBy() {
       </FieldLabel>
       <FilterButton 
         onClick={() => setOpen(!open)}
-        className="w-36 gap-2"
+        className="w-40 gap-2"
       >
         <ListFilter size={20}/>
         {orderBy === "antigo" ? "Mais Antigo" : "Mais Recente" }
@@ -75,9 +70,7 @@ export default function OrderBy() {
             )}
           </motion.div>
         }
-
       </AnimatePresence>
     </div>
-
   )
 }
