@@ -14,11 +14,8 @@ export default function Header() {
               <Link href={"/historico"}>Histórico de Transações</Link>
             </li>
             <li>
-              outro
+              <Link href={"/dashboard"}>Gráficos</Link>
             </li>
-            <li>
-              outro
-              </li>
           </ul>
         </nav>
         <div className="">naosei</div>
