@@ -1,6 +1,6 @@
 'use client'
 import { Transaction } from "@/types/transaction";
-import { ReactNode, useContext, createContext, useState, useEffect } from "react";
+import { ReactNode, useContext, createContext, useState, useEffect, use } from "react";
 
 interface TransactionContextType {
   transaction: Transaction[],
@@ -12,19 +12,32 @@ const TransactionContext = createContext<TransactionContextType | null>(null)
 
 export function TransactionProvider({ children }: {children: ReactNode}) {
 
+  const [isLoaded, setIsLoaded] = useState(false)
   const [transaction, setTransaction] = useState<Transaction[]>([])
 
   useEffect(() => {
-    const stored = localStorage.getItem("transaction")
-
+    const stored = localStorage.getItem('transaction')
     if(stored) {
-      setTransaction(JSON.parse(stored))
-    }
-  },[])
+      try {
+        const dados = JSON.parse(stored)
+
+        const dateFormated = dados.map((transaction: Transaction) => ({
+          ...transaction,
+          createdAt: new Date(transaction.createdAt)
+        })) 
+        setTransaction(dateFormated)
+      } catch (err) {
+        console.error("Erro ao carregar: ", err)
+      }
+    } 
+    setIsLoaded(true)
+  }, [])
 
   useEffect(() => {
-    localStorage.setItem("transaction", JSON.stringify(transaction))
-  },[transaction])
+    if(isLoaded) {
+      localStorage.setItem("transaction", JSON.stringify(transaction))
+    }
+  },[transaction, isLoaded])
 
   function addTransaction(transaction: Transaction) {
     setTransaction(prev => [...prev, transaction])
