@@ -1,30 +1,39 @@
 "use client"
-import { Banknote, ChartPie, ClipboardList } from "lucide-react";
+import { Ban, Banknote, ChartPie, ClipboardList } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 export default function Header() {
 
+  const navItems = [
+    {name: "Registrar", href: "/gastos", bgColor: "bg-green-500", underline: "after:bg-green-500", icon: <Banknote color="#4CAF50"/>},
+    {name: "Histórico", href: "/historico", bgColor: "bg-orange-500", underline: "after:bg-orange-500", icon: <ClipboardList color="#FF9800"/>},
+    {name: "Gráficos", href: "/dashboard", bgColor: "bg-violet-500", underline: "after:bg-violet-500", icon: <ChartPie color="#9C27B0"/>}
+  ]
+
   const pathName = usePathname()
 
   return(
     <header className="w-full">
-      <div className="max-w-6xl mx-auto flex justify-center py-4 px-4 text-lg relative">  
+      <div className="max-w-6xl mx-auto flex justify-center py-4 px-4 text-lg ">  
         <div className="">FinanceTracker</div>
-        <nav className="w-full h-full flex items-center justify-center">
+        <nav className="w-full h-full flex items-center justify-center ">
           <ul className="flex gap-12 items-center text-black">
-            <li className="flex gap-2 items-center">
-              <Banknote color="#4CAF50" />
-              <Link href={"/gastos"}>Registrar Transação</Link>
-            </li>
-            <li className="flex gap-2 items-center">
-              <ClipboardList color="#FF9800" />
-              <Link href={"/historico"}>Histórico de Transações</Link>
-            </li >
-            <li className="flex gap-2 items-center">
-              <ChartPie color="#9C27B0"/>
-              <Link href={"/dashboard"}>Gráficos</Link>
-            </li>
+            {navItems.map((item) => {
+              const isActive = pathName === item.href
+
+            return(
+              <li
+                className={`flex gap-2 items-center relative transition-all after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-full after:origin-left after:transition-transform after:duration-300 pb-2 ${item.underline}
+                ${isActive ? "after:scale-x-100" : "after:scale-x-0"}
+                `}
+              > 
+                {item.icon}
+                <Link href={item.href}>{item.name}</Link>
+              </li>
+            ) 
+            } 
+            )}
           </ul>
         </nav>
         <div className="">naosei</div>
