@@ -17,7 +17,7 @@ export function DateFilter() {
   const { dateRange, setDateRange } = useFilter()
 
   return (
-    <Field className="mx-auto w-60 gap-1">
+    <Field className="w-60 gap-1">
       <FieldLabel className="text-gray-600" htmlFor="date-picker-range">Selecione um intervalo de data:</FieldLabel>
       <Popover>
         <PopoverTrigger asChild>
@@ -41,12 +41,12 @@ export function DateFilter() {
             )}
           </Button>
         </PopoverTrigger>
-        <PopoverContent className="w-auto p-0" align="end">
+        <PopoverContent className="w-auto p-0 " align="end" side="bottom" sideOffset={8}>
           <Calendar
             mode="range"
             selected={dateRange}
             onSelect={setDateRange}
-            numberOfMonths={2}
+            numberOfMonths={1}
           />
         </PopoverContent>
       </Popover>
