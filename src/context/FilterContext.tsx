@@ -11,9 +11,12 @@ interface FilterContextType {
   //data
   dateRange?: DateRange
   setDateRange: (range?: DateRange) => void
+  isInDateRange: (date: Date, range: DateRange | undefined) => void
   //order
   orderBy: Orderby
   setOrderBy: (value: Orderby) => void
+
+
 }
 
 const FilterContext = createContext<FilterContextType | null>(null)
@@ -31,9 +34,15 @@ export function FilterProvider({ children }: {children: ReactNode}) {
       : [...prev, id]
     )
   }
+
+  function isInDateRange(date: Date, range?: DateRange) {
+    if(!range?.from || !range.to) return true
+
+    return date >= range.from && date <= range.to
+  }
   
   return(
-    <FilterContext.Provider value={{ dateRange, setDateRange , orderBy, setOrderBy, categoriesSelected, handleCheckbox }}>
+    <FilterContext.Provider value={{ dateRange, setDateRange , orderBy, setOrderBy, categoriesSelected, handleCheckbox, isInDateRange }}>
       {children}
     </FilterContext.Provider>
   )

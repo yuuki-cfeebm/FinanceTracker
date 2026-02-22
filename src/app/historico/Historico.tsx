@@ -13,13 +13,7 @@ import { DateRange } from "react-day-picker"
 export default function Historico() {
 
   const { transaction } = useTransaction()
-  const { orderBy, dateRange, categoriesSelected, handleCheckbox } = useFilter()
-
-  function isInDateRange(date: Date, range?: DateRange) {
-    if(!range?.from || !range.to) return true
-
-    return date >= range.from && date <= range.to
-  }
+  const { orderBy, dateRange, categoriesSelected, handleCheckbox, isInDateRange } = useFilter()
 
   const transactionsFiltered = transaction
   .filter(transac => {
