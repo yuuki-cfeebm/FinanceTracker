@@ -15,7 +15,7 @@ export default function TransactionItem( { transaction }: TransactionItemProps) 
     <div className={`bg-white rounded-lg border ${valueType == "saida" ? categoryInfo?.border : "border-green-700"} ${categoryInfo?.color} py-2 px-4`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-16">
-          <span className={`w-40 h-auto text-xl ${value < 0 ? "text-red-500" : "text-green-500"}`}>R$ {value}</span>
+          <span className={`w-40 h-auto text-xl ${value < 0 ? "text-red-500" : "text-green-500"}`}>{value.toLocaleString("pt-BR", {style: "currency", currency: "BRL"})}</span>
           <span className="text-gray-400">{description}</span>
         </div>
         <div className="flex items-center gap-16">
