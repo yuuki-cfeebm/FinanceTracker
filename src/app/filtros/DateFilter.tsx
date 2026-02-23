@@ -17,7 +17,7 @@ export function DateFilter() {
   const { dateRange, setDateRange } = useFilter()
 
   return (
-    <Field className="w-60 gap-1">
+    <Field className="w-auto gap-1">
       <FieldLabel className="text-gray-600" htmlFor="date-picker-range">Selecione um intervalo de data:</FieldLabel>
       <Popover>
         <PopoverTrigger asChild>
