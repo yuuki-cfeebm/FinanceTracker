@@ -3,6 +3,7 @@ import { useTransaction } from "@/context/TransactionContext"
 import { categories } from "@/data/categories"
 import { AnimatePresence, motion } from "motion/react"
 import { FormEvent, useState } from "react"
+import { toast } from "sonner"
 
 export default function GastosClient() {
 
@@ -43,6 +44,7 @@ export default function GastosClient() {
       createdAt: new Date()
     })
 
+    toast.success("Transação registrada com sucesso!", {position: "bottom-right"})
     setInput("")
     setDescription("")
     setCatSelected("")
@@ -85,26 +87,31 @@ export default function GastosClient() {
               </label>
 
               <div className="flex flex-wrap gap-4 justify-center">
-                {categories.map(cat => {
-                  const Icon = cat.icon
-                  return (
-                    <motion.button
-                      key={cat.id}
-                      whileHover={{ scale: 1.05 }}
-                      whileTap={{ scale: 0.95 }}
-                      className={`flex items-center justify-center gap-2 w-40 h-12 rounded-xl 
-                        ${cat.background} ${cat.color} font-bold cursor-pointer border-2
-                        ${catSelected === cat.id ? cat.border : "border-transparent"}
-                      `}
-                      onClick={() => setCatSelected(cat.id)}
-                      type="button"
-                    >
-                      <Icon size={22}/>
-                      {cat.name}
-                    </motion.button>
-                  )
-                })}
+
+              {categories.filter(cat => cat.id != "entrada").map(item => {
+                const Icon = item.icon
+                
+                return(
+                  <motion.button
+                    key={item.id}
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.95 }}
+                    className={`flex items-center justify-center gap-2 w-40 h-12 rounded-xl 
+                      ${item.background} ${item.color} font-bold cursor-pointer border-2
+                      ${catSelected === item.id ? item.border : "border-transparent"}
+                    `}
+                    onClick={() => setCatSelected(item.id)}
+                    type="button"
+                  >
+                    {Icon && <Icon size={22}/>}
+                    {item.name}
+                  </motion.button>
+
+                )
+              })
+              }
               </div>
+
             </motion.div>
           )}
         </AnimatePresence> 

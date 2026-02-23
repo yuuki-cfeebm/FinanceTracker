@@ -4,6 +4,7 @@ import "./globals.css";
 import Header from "@/components/Header";
 import { TransactionProvider } from "@/context/TransactionContext";
 import { FilterProvider } from "@/context/FilterContext";
+import { Toaster } from "sonner";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -35,6 +36,7 @@ export default function RootLayout({
             </main>
           </TransactionProvider>
         </FilterProvider>
+        <Toaster />
       </body>
     </html>
   );

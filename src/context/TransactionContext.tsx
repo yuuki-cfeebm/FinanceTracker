@@ -1,6 +1,7 @@
 'use client'
 import { Transaction } from "@/types/transaction";
-import { ReactNode, useContext, createContext, useState, useEffect, use } from "react";
+import { ReactNode, useContext, createContext, useState, useEffect} from "react";
+import { toast } from "sonner";
 
 interface TransactionContextType {
   transaction: Transaction[],
@@ -45,6 +46,7 @@ export function TransactionProvider({ children }: {children: ReactNode}) {
   }
 
   function cancelTransaction() {
+    toast.success("Transação cancelada!", {position: "bottom-right"})
     return transaction
   }
 
