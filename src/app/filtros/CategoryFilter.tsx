@@ -2,8 +2,8 @@
 import { FieldLabel } from "@/components/ui/field";
 import { useFilter } from "@/context/FilterContext";
 import { categories } from "@/data/categories";
-import { AnimatePresence, motion } from "framer-motion"
 import { FilterIcon } from "lucide-react";
+import { AnimatePresence, motion } from "motion/react";
 import { useEffect, useRef, useState } from "react";
 
 export default function CategoryFilter() {
@@ -51,8 +51,8 @@ export default function CategoryFilter() {
             style={{ originY: 0 }}
             className="bg-white p-4 rounded-lg shadow flex flex-col gap-4 absolute z-10"
           >
-            {categories.map(cat => {
-              const Icon = cat.icon
+            {categories.filter(cat => cat.id != "entrada").map(cat => {
+              const Icon = cat.icon 
               const checked = categoriesSelected.includes(cat.id)
               return (
                 <label
@@ -65,7 +65,7 @@ export default function CategoryFilter() {
                     onChange={() => handleCheckbox(cat.id)}
                     checked={checked}
                   />
-                  <Icon size={20} />
+                  {Icon && <Icon size={20} />}
                   {cat.name}
                 </label>
               )
