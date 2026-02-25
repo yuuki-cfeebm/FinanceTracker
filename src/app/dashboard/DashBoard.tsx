@@ -8,6 +8,8 @@ import { useFilter } from "@/context/FilterContext";
 import { useMemo } from "react";
 import { categories, pieChartColors } from "@/data/categories";
 import Balance from "./Balance";
+import Expenses from "./Expenses";
+import ExpensiveCategory from "./ExpensiveCategory";
 
 export default function DashBoard() {
 
@@ -43,15 +45,13 @@ export default function DashBoard() {
           id: categoryId,
           name: categoryInfo?.name || "entrada", 
           value: formatedValue,
-          // Atribui a cor exata baseada no ID
           fill: pieChartColors[categoryId]
         })
       }
       return acc
     }, [] as { id: string, name: string, value: number, fill: string}[])
   }, [transactionsDateFiltered])
-  console.log(chartData)
-  console.log(transactionsDateFiltered)
+  
 
   return(
     <div className="flex flex-col gap-6 w-full">
@@ -64,15 +64,18 @@ export default function DashBoard() {
         </div>
         <div className="flex flex-col justify-between gap-10 col-span-2 row-span-5 p-2 rounded-xl border border-gray-500">
           <PieExample chartData={chartData}/>
-          <div className="w-full max-h-50 h-full">
+          <div className="flex justify-between w-full gap-10">
             <Summary chartData={chartData}/>
+            <ExpensiveCategory chartData={chartData} showQuanti={3} items="items-end" padd="pr-4"/>
           </div>
         </div>
         <div className="col-span-1 row-span-1 p-2 rounded-xl border border-gray-500">
           <Profit profit={totalProfits}/>
         </div>
-        <div className="col-span-1 row-span-2 p-2 rounded-xl border border-gray-500">
-          
+        <div className="flex flex-col justify-around col-span-1 row-span-2 p-2 rounded-xl border border-gray-500">
+          <Expenses expense={totalExpenses}/>
+          <div className="w-full h-0.5 bg-gray-400"></div>
+          <ExpensiveCategory chartData={chartData} showQuanti={1} items="items-start" padd="pl-4"/>
         </div>
       </div>
     </div>
