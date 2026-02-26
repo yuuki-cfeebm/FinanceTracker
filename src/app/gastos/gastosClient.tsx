@@ -1,4 +1,5 @@
 "use client"
+import TitlePage from "@/components/TitlePage"
 import { useTransaction } from "@/context/TransactionContext"
 import { categories } from "@/data/categories"
 import { AnimatePresence, motion } from "motion/react"
@@ -51,18 +52,18 @@ export default function GastosClient() {
   }
 
   return(
-    <div className="flex flex-col items-center gap-12">
-      <h1 className="text-4xl pt-6">Registrar Gastos</h1>
-      <form className="flex flex-col items-center w-2xl bg-white p-4 mx-auto rounded-xl gap-10">
-        <div className="flex text-xl justify-center items-center gap-18 bg-gray-100 w-80 mx-auto relative px-10 py-2 z-1 border-b-2 border-gray-300 rounded-t-xl">
-          <div className={`absolute w-36 h-10 bg-white opacity-50 rounded-xl transition ${inputType == "saida" ? "-translate-x-20" : "translate-x-20"}`}></div>
-          <button className="px-4 py-1 z-1 cursor-pointer" type="button" onClick={() => setInputType("saida")}>
-            Saída
-          </button>
-          <button className="px-4 py-1 z-1 cursor-pointer" type="button" onClick={() => setInputType("entrada")}>
-            Entrada
-          </button>
-        </div>
+    <div className="flex flex-col items-center gap-6">
+      <TitlePage title="Registrar Transações"/>
+      <div className="flex text-xl justify-center items-center gap-18 bg-gray-100 w-80 h-14 mx-auto relative px-10 py-2 z-1 border-blue-500 rounded-full">
+        <div className={`absolute w-36 h-10 bg-blue-200 opacity-50 rounded-full transition ${inputType == "saida" ? "-translate-x-20" : "translate-x-20"}`}></div>
+        <button className="px-4 py-1 z-1 cursor-pointer absolute left-9" type="button" onClick={() => setInputType("saida")}>
+          Saída
+        </button>
+        <button className="px-4 py-1 z-1 cursor-pointer absolute right-6" type="button" onClick={() => setInputType("entrada")}>
+          Entrada
+        </button>
+      </div>
+      <form className="flex flex-col items-center max-w-2xl w-full bg-white p-4 mx-auto rounded-xl gap-10 border border-blue-500">
         <div className="flex justify-center">
           <input 
             type="number"
@@ -126,14 +127,14 @@ export default function GastosClient() {
         <div className="flex justify-around w-full">
           <button 
             type="button" 
-            className="text-xl font-bold text-white bg-red-500 px-16 py-4 rounded-xl cursor-pointer hover:bg-red-600 transition"
+            className="text-xl font-bold text-white bg-red-500 px-16 py-4 rounded-xl cursor-pointer border border-transparent hover:border-red-500 hover:bg-red-100 hover:text-red-500 transition"
             onClick={cancelTransaction}
           >
             Cancelar
           </button>
           <button 
             type="submit" 
-            className="text-xl font-bold text-white bg-blue-500 px-16 py-4 rounded-xl cursor-pointer hover:bg-blue-600 transition"
+            className="text-xl font-bold text-white bg-blue-500 px-16 py-4 rounded-xl cursor-pointer border border-transparent hover:border-blue-500 hover:bg-blue-100 hover:text-blue-500 transition"
             onClick={handleSubmitForm}
           >
             Adicionar

@@ -7,8 +7,7 @@ import FilterMarked from "../filtros/CategoryMarked"
 import { categories } from "@/data/categories"
 import { DateFilter } from "../filtros/DateFilter"
 import OrderBy from "../filtros/OrderBy"
-import { DateRange } from "react-day-picker"
-
+import TitlePage from "@/components/TitlePage"
 
 export default function Historico() {
 
@@ -41,7 +40,7 @@ export default function Historico() {
 
   return(
     <div className="flex flex-col items-center">
-      <h1>Histórico de Transações</h1>
+      <TitlePage title="Histórico de Transações"/>
       <div className="w-full flex flex-col gap-4">
         <div className="flex flex-col">
           <span className="text-gray-400">Filtros: </span>
