@@ -9,7 +9,6 @@ interface PieExampleProps {
 export function PieExample({ chartData }: PieExampleProps) {
   return (
     <div className="flex flex-col justify-center items-center w-full gap-4">
-      <p className="text-3xl text-gray-400">Gráfico das Transações</p>
       { chartData.length == 0 ? (
         <span>sem Dados</span>
       ) : (

@@ -17,7 +17,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br">
-      <body className={`${inter.className} antialiased bg-gray-100`}>
+      <body className={`${inter.className} antialiased bg-white`}>
         <NextTopLoader
           color="#2196F3"
           initialPosition={0.08}
