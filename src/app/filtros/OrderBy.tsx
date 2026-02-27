@@ -36,15 +36,15 @@ export default function OrderBy() {
 
   return(
     <div className="relative" ref={ref}>
-      <FieldLabel className="text-gray-600" >
+      <FieldLabel className=" text-gray-600" >
         Ordenar por:
       </FieldLabel>
       <FilterButton 
         onClick={() => setOpen(!open)}
-        className="w-40 gap-2"
+        className="dark:bg-zinc-700 w-40 gap-2"
       >
-        <ListFilter size={20}/>
-        {orderBy === "antigo" ? "Mais Antigo" : "Mais Recente" }
+        <ListFilter size={20} color="#a1a1aa"/>
+        <span className="dark:text-zinc-400">{orderBy === "antigo" ? "Mais Antigo" : "Mais Recente" }</span>
       </FilterButton>
         
       <AnimatePresence>
@@ -56,15 +56,15 @@ export default function OrderBy() {
             exit={{ opacity: 0, scaleY: 0.8, y: -5 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             style={{ originY: 0 }}
-            className="flex flex-col absolute bg-white rounded-lg shadow mt-0.5 overflow-hidden w-30"
+            className="flex flex-col absolute dark:bg-zinc-700 bg-white rounded-lg shadow mt-0.5 overflow-hidden w-30"
           >
             {optionSelect.map(option => 
               (
                <button 
                 onClick={option.onclick}
-                className="hover:bg-gray-200 px-2 py-2 text-start"
+                className="dark:hover:bg-zinc-500 hover:bg-gray-200 px-2 py-2 text-start"
               >
-                {option.name}
+                <span className="dark:text-zinc-400">{option.name}</span>
               </button>
               )
             )}

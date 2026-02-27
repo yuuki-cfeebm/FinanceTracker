@@ -56,7 +56,7 @@ export default function Historico() {
           <span className="text-gray-400">Filtros Ativos:</span>
           <div className="flex gap-4">
             {categoriesSelected.length === 0 ? (
-              <div className="flex items-center gap-1 shadow bg-white p-2 rounded-md border-slate-300 hover:bg-slate-100 transition cursor-pointer text-gray-600">Nenhum filtro ativo</div>
+              <div className="flex items-center gap-1 shadow dark:bg-zinc-700 bg-white p-2 rounded-md border dark:border-zinc-500 border-slate-300 dark:hover:bg-zinc-500 hover:bg-slate-100 transition cursor-pointer dark:text-zinc-400 text-gray-600">Nenhum filtro ativo</div>
             ):(
               categoriesSelected.map(catSelec => {
                 const categoryInfo = categories.find(cat => cat.id === catSelec)

@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import { TransactionProvider } from "@/context/TransactionContext";
 import { FilterProvider } from "@/context/FilterContext";
 import { Toaster } from "sonner";
+import { ThemeProvider } from "next-themes";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -17,26 +18,28 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-br">
-      <body className={`${inter.className} antialiased bg-white`}>
-        <NextTopLoader
-          color="#2196F3"
-          initialPosition={0.08}
-          crawlSpeed={200}
-          height={3}
-          crawl={true}
-          showSpinner={false}
-          easing="ease"
-          speed={200}
-        />
-        <FilterProvider>
-          <TransactionProvider>
-            <Header />
-            <main className="max-w-6xl mx-auto p-4">  
-              {children}
-            </main>
-          </TransactionProvider>
-        </FilterProvider>
-        <Toaster />
+      <body className={`${inter.className} antialiased dark:bg-zinc-800 dark:text-white bg-white`}>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <NextTopLoader
+            color="#2196F3"
+            initialPosition={0.08}
+            crawlSpeed={200}
+            height={3}
+            crawl={true}
+            showSpinner={false}
+            easing="ease"
+            speed={200}
+          />
+          <FilterProvider>
+            <TransactionProvider>
+              <Header />
+              <main className="max-w-6xl mx-auto p-4">  
+                {children}
+              </main>
+            </TransactionProvider>
+          </FilterProvider>
+          <Toaster />
+        </ThemeProvider>
       </body>
     </html>
   );

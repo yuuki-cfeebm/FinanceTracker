@@ -54,8 +54,8 @@ export default function GastosClient() {
   return(
     <div className="flex flex-col items-center gap-6">
       <TitlePage title="Registrar Transações"/>
-      <div className="flex text-xl justify-center items-center gap-18 bg-gray-100 w-80 h-14 mx-auto relative px-10 py-2 z-1 border-blue-500 rounded-full">
-        <div className={`absolute w-36 h-10 bg-blue-200 opacity-50 rounded-full transition ${inputType == "saida" ? "-translate-x-20" : "translate-x-20"}`}></div>
+      <div className="flex text-xl justify-center items-center gap-18 dark:bg-zinc-700 bg-gray-100 w-80 h-14 mx-auto relative px-10 py-2 z-1 border-blue-500 rounded-full dark:text-white">
+        <div className={`absolute w-36 h-10 dark:bg-blue-500 bg-blue-200 opacity-50 rounded-full transition ${inputType == "saida" ? "-translate-x-20" : "translate-x-20"}`}></div>
         <button className="px-4 py-1 z-1 cursor-pointer absolute left-9" type="button" onClick={() => setInputType("saida")}>
           Saída
         </button>
@@ -63,7 +63,7 @@ export default function GastosClient() {
           Entrada
         </button>
       </div>
-      <form className="flex flex-col items-center max-w-2xl w-full bg-white p-4 mx-auto rounded-xl gap-10 border border-blue-500">
+      <form className="flex flex-col items-center max-w-2xl w-full dark:bg-zinc-800 bg-white p-4 mx-auto rounded-xl gap-10 border border-blue-500">
         <div className="flex justify-center">
           <input 
             type="number"
@@ -98,7 +98,7 @@ export default function GastosClient() {
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
                     className={`flex items-center justify-center gap-2 w-40 h-12 rounded-xl 
-                      ${item.background} ${item.color} font-bold cursor-pointer border-2
+                      dark:bg-zinc-700 ${item.background} ${item.color} font-bold cursor-pointer border-2
                       ${catSelected === item.id ? item.border : "border-transparent"}
                     `}
                     onClick={() => setCatSelected(item.id)}
@@ -118,7 +118,7 @@ export default function GastosClient() {
         </AnimatePresence> 
         <div className="flex flex-col w-full">
           <textarea 
-            className="max-h-20 p-1 bg-gray-100 rounded-lg focus:ring-2 ring-blue-400 outline-none transition" 
+            className="max-h-20 p-1 dark:bg-zinc-700 bg-gray-100 rounded-lg focus:ring-2 ring-blue-400 outline-none transition" 
             placeholder="Descrição..." 
             onChange={(e) => setDescription(e.target.value)}
             value={description}
@@ -127,14 +127,14 @@ export default function GastosClient() {
         <div className="flex justify-around w-full">
           <button 
             type="button" 
-            className="text-xl font-bold text-white bg-red-500 px-16 py-4 rounded-xl cursor-pointer border border-transparent hover:border-red-500 hover:bg-red-100 hover:text-red-500 transition"
+            className="text-xl font-bold text-white bg-red-500 px-16 py-4 rounded-xl cursor-pointer border border-transparent hover:border-red-500 hover:bg-red-100 dark:hover:bg-zinc-700 hover:text-red-500 transition"
             onClick={cancelTransaction}
           >
             Cancelar
           </button>
           <button 
             type="submit" 
-            className="text-xl font-bold text-white bg-blue-500 px-16 py-4 rounded-xl cursor-pointer border border-transparent hover:border-blue-500 hover:bg-blue-100 hover:text-blue-500 transition"
+            className="text-xl font-bold text-white bg-blue-500 px-16 py-4 rounded-xl cursor-pointer border border-transparent hover:border-blue-500 dark:hover:bg-zinc-700 hover:bg-blue-100 hover:text-blue-500 transition"
             onClick={handleSubmitForm}
           >
             Adicionar

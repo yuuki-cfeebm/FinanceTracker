@@ -12,7 +12,7 @@ export default function TransactionItem( { transaction }: TransactionItemProps) 
   const Icon = categoryInfo?.icon
 
   return(
-    <div className={`bg-white rounded-lg border ${valueType == "saida" ? "border-red-500" : "border-green-500"} ${categoryInfo?.color} py-2 px-4`}>
+    <div className={`dark:bg-zinc-700 bg-white rounded-lg border ${valueType == "saida" ? "border-red-500" : "border-green-500"} ${categoryInfo?.color} py-2 px-4`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-16">
           <span className={`w-40 h-auto text-xl ${value < 0 ? "text-red-500" : "text-green-500"}`}>{value.toLocaleString("pt-BR", {style: "currency", currency: "BRL"})}</span>
@@ -23,8 +23,8 @@ export default function TransactionItem( { transaction }: TransactionItemProps) 
             {valueType === "saida" ? Icon && <Icon key={category} size={30}/> : <BanknoteArrowDown color="#4CAF50"/>}
           </div>
           <div className="flex flex-col items-end">
-            <span className="text-gray-600 text-lg">{new Date(createdAt).toLocaleDateString("pt-br")}</span>
-            <span className="text-gray-500">{new Date(createdAt).toLocaleTimeString("pt-br")}</span>
+            <span className="dark:text-zinc-300 text-gray-600 text-lg">{new Date(createdAt).toLocaleDateString("pt-br")}</span>
+            <span className="dark:text-zinc-400 text-gray-500">{new Date(createdAt).toLocaleTimeString("pt-br")}</span>
           </div>
         </div>
       </div>

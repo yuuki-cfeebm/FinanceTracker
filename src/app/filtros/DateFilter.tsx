@@ -18,7 +18,7 @@ export function DateFilter() {
 
   return (
     <Field className="w-auto gap-1">
-      <FieldLabel className="text-gray-600" htmlFor="date-picker-range">Selecione um intervalo de data:</FieldLabel>
+      <FieldLabel className=" text-gray-600" htmlFor="date-picker-range">Selecione um intervalo de data:</FieldLabel>
       <Popover>
         <PopoverTrigger asChild>
           <Button
@@ -26,7 +26,7 @@ export function DateFilter() {
             id="date-picker-range"
             className="text-gray-600 justify-start p-2 font-normal text-md"
           >
-            <CalendarIcon className="mr-2 h-4 w-4" />
+            <CalendarIcon className="mr-2 h-4 w-4" color="#a1a1aa"/>
             {dateRange?.from ? (
               dateRange.to ? (
                 <>
@@ -37,7 +37,7 @@ export function DateFilter() {
                 format(dateRange.from, "LLL dd, y")
               )
             ) : (
-              <span>Selecione uma data: </span>
+              <span className="dark:text-zinc-400">Selecione uma data: </span>
             )}
           </Button>
         </PopoverTrigger>

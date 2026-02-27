@@ -34,7 +34,7 @@ export default function CategoryFilter() {
       </FieldLabel>
       <button
         onClick={() => setOpen(prev => !prev)}
-        className="flex gap-1 items-center bg-white py-2 px-4 rounded-md border border-slate-300 hover:bg-slate-100 transition text-gray-600 cursor-pointer shadow"
+        className="flex gap-1 items-center dark:bg-zinc-700 bg-white py-2 px-4 rounded-md border dark:border-zinc-500  border-slate-300 dark:hover:bg-zinc-500 hover:bg-slate-100 transition dark:text-zinc-400 text-gray-600 cursor-pointer shadow"
       >
         <FilterIcon size={20}/>
         Categorias
@@ -49,7 +49,7 @@ export default function CategoryFilter() {
             exit={{ opacity: 0, scaleY: 0.8, y: -5 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             style={{ originY: 0 }}
-            className="bg-white p-4 rounded-lg shadow flex flex-col gap-4 absolute z-10"
+            className="dark:bg-zinc-700 bg-white p-4 rounded-lg shadow flex flex-col gap-4 absolute z-10"
           >
             {categories.filter(cat => cat.id != "entrada").map(cat => {
               const Icon = cat.icon 
