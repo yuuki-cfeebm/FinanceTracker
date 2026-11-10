@@ -87,7 +87,7 @@ export default function GastosClient() {
                 Categoria:
               </label>
 
-              <div className="flex flex-wrap gap-4 justify-center">
+              <div className="flex flex-wrap gap-4 justify-center p-1">
 
               {categories.filter(cat => cat.id != "entrada").map(item => {
                 const Icon = item.icon
@@ -118,7 +118,7 @@ export default function GastosClient() {
         </AnimatePresence> 
         <div className="flex flex-col w-full">
           <textarea 
-            className="max-h-20 p-1 dark:bg-zinc-700 bg-gray-100 rounded-lg focus:ring-2 ring-blue-400 outline-none transition" 
+            className="max-h-20 p-2 dark:bg-zinc-700 bg-gray-100 rounded-lg focus:ring-2 ring-blue-400 outline-none transition" 
             placeholder="Descrição..." 
             onChange={(e) => setDescription(e.target.value)}
             value={description}
