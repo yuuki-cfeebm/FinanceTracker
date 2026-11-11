@@ -1,6 +1,8 @@
+export type TransactionType = "entrada" | "saida"
+
 export type Transaction = {
   id: string
-  valueType: string
+  valueType: TransactionType
   value: number
   category?: string
   description?: string
