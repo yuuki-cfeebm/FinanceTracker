@@ -1,7 +1,7 @@
-import GastosClient from "./gastosClient";
+import TransactionsClient from "./transactionsClient";
 
 export default function Page() {
   return(
-    <GastosClient />
+    <TransactionsClient />
   )
 }
