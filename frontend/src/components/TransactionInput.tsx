@@ -6,21 +6,20 @@ const formatter = new Intl.NumberFormat("pt-BR", {
   maximumFractionDigits: 2,
 })
 
-interface MoneyInputProps
+interface TransactionInputProps
   extends Omit<InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "type"> {
   cents: number
   onChange: (cents: number) => void
   maxDigits?: number
 }
 
-export default function MoneyInput({
+export default function TransactionInput({
   cents,
   onChange,
   maxDigits = 11,
   ...props
-}: MoneyInputProps) {
+}: TransactionInputProps) {
   function handleChange(e: ChangeEvent<HTMLInputElement>) {
-    // keeps only digits: "R$ 1.234,5" -> "12345"
     const digits = e.target.value.replace(/\D/g, "").slice(0, maxDigits)
     onChange(Number(digits))
   }
