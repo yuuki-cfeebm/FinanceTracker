@@ -9,7 +9,6 @@ export const categories: Category[] = [
   {id: "educacao", name: "Educação", background:"bg-violet-100" , color: "text-violet-500", icon: GraduationCap, border: "border-violet-500"},
   {id: "lazer", name: "Lazer", background:"bg-green-100" , color: "text-green-500", icon: PartyPopper, border: "border-green-500"},
   {id: "cartao", name: "Cartão", background:"bg-slate-100" , color: "text-slate-500", icon: CreditCard, border: "border-slate-500"},
-  {id: "entrada", name: "Entrada"}
 ]
 
 export const categoryColors: Record<string, string> = {
