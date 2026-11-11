@@ -11,10 +11,10 @@ import TitlePage from "@/components/TitlePage"
 
 export default function Historico() {
 
-  const { transaction } = useTransaction()
+  const { transactions } = useTransaction()
   const { orderBy, dateRange, categoriesSelected, handleCheckbox, isInDateRange } = useFilter()
 
-  const transactionsFiltered = transaction
+  const transactionsFiltered = transactions
   .filter(transac => {
     if(categoriesSelected.length === 0) return true
 

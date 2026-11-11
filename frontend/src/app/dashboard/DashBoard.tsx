@@ -14,10 +14,10 @@ import TitlePage from "@/components/TitlePage";
 
 export default function DashBoard() {
 
-  const {transaction} = useTransaction()
+  const { transactions } = useTransaction()
   const {dateRange, isInDateRange}   = useFilter()
   
-  const transactionsDateFiltered = transaction.filter((transac) => isInDateRange(transac.createdAt, dateRange))
+  const transactionsDateFiltered = transactions.filter((transac) => isInDateRange(transac.createdAt, dateRange))
   
   const profits = transactionsDateFiltered.filter((transac) => transac.valueType === "entrada")
   const expenses = transactionsDateFiltered.filter((transac) => transac.valueType === "saida")
