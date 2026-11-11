@@ -1,57 +1,93 @@
-'use client'
-import { Transaction } from "@/types/transaction";
-import { ReactNode, useContext, createContext, useState, useEffect} from "react";
-import { toast } from "sonner";
+"use client"
+import { Transaction } from "@/types/transaction"
+import { ReactNode, useContext, createContext, useState, useEffect } from "react"
+import { toast } from "sonner"
+import {
+  ApiTransaction,
+  listTransactions,
+  createTransaction,
+} from "@/services/transactions"
 
 interface TransactionContextType {
-  transaction: Transaction[],
-  addTransaction: (transaction: Transaction) => void,
+  transactions: Transaction[]
+  addTransaction: (data: Omit<Transaction, "id">) => Promise<boolean>
   cancelTransaction: () => void
+  isLoading: boolean
 }
 
 const TransactionContext = createContext<TransactionContextType | null>(null)
 
-export function TransactionProvider({ children }: {children: ReactNode}) {
+function toTransaction(item: ApiTransaction): Transaction {
+  return {
+    id: item.id,
+    value: item.value,
+    valueType: item.valueType,
+    description: item.description,
+    category: item.category,
+    createdAt: new Date(item.date),
+  }
+}
 
-  const [isLoaded, setIsLoaded] = useState(false)
-  const [transaction, setTransaction] = useState<Transaction[]>([])
+export function TransactionProvider({ children }: { children: ReactNode }) {
+  const [transactions, setTransactions] = useState<Transaction[]>([])
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const stored = localStorage.getItem('transaction')
-    if(stored) {
+    async function loadTransactions() {
       try {
-        const dados = JSON.parse(stored)
-
-        const dateFormated = dados.map((transaction: Transaction) => ({
-          ...transaction,
-          createdAt: new Date(transaction.createdAt)
-        })) 
-        setTransaction(dateFormated)
+        const data = await listTransactions()
+        setTransactions(data.map(toTransaction))
       } catch (err) {
-        console.error("Erro ao carregar: ", err)
+        console.error("Error loading from API:", err)
+        const stored = localStorage.getItem("transactions")
+        if (stored) {
+          const parsed = JSON.parse(stored) as Transaction[]
+          setTransactions(
+            parsed.map((t) => ({ ...t, createdAt: new Date(t.createdAt) }))
+          )
+        }
+      } finally {
+        setIsLoading(false)
       }
-    } 
-    setIsLoaded(true)
+    }
+
+    loadTransactions()
   }, [])
 
   useEffect(() => {
-    if(isLoaded) {
-      localStorage.setItem("transaction", JSON.stringify(transaction))
+    if (!isLoading) {
+      localStorage.setItem("transactions", JSON.stringify(transactions))
     }
-  },[transaction, isLoaded])
+  }, [transactions, isLoading])
 
-  function addTransaction(transaction: Transaction) {
-    setTransaction(prev => [...prev, transaction])
-    console.log("gasto", transaction)
+  async function addTransaction(data: Omit<Transaction, "id">): Promise<boolean> {
+    try {
+      const created = await createTransaction({
+        description: data.description || "No description",
+        value: data.value,
+        valueType: data.valueType,
+        category: data.category || "Other",
+        date: data.createdAt.toISOString(),
+      })
+
+      setTransactions((prev) => [...prev, toTransaction(created)])
+      toast.success("Transaction saved successfully!", { position: "bottom-right" })
+      return true
+    } catch (error) {
+      console.error(error)
+      toast.error("Error communicating with the server", { position: "bottom-right" })
+      return false
+    }
   }
 
   function cancelTransaction() {
-    toast.success("Transação cancelada!", {position: "bottom-right"})
-    return transaction
+    toast.success("Transaction canceled!", { position: "bottom-right" })
   }
 
   return (
-    <TransactionContext.Provider value={{transaction, addTransaction, cancelTransaction}}>
+    <TransactionContext.Provider
+      value={{ transactions, addTransaction, cancelTransaction, isLoading }}
+    >
       {children}
     </TransactionContext.Provider>
   )
@@ -59,7 +95,6 @@ export function TransactionProvider({ children }: {children: ReactNode}) {
 
 export function useTransaction() {
   const context = useContext(TransactionContext)
-  if(!context) throw new Error("Deve ser usado dentro de TransactionProvider")
-    return context
+  if (!context) throw new Error("useTransaction must be used inside TransactionProvider")
+  return context
 }
-
