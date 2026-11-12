@@ -1,78 +1,56 @@
 "use client"
-import { FieldLabel } from "@/components/ui/field";
-import { useFilter } from "@/context/FilterContext";
-import { categories } from "@/data/categories";
-import { FilterIcon } from "lucide-react";
-import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useRef, useState } from "react";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { useFilter } from "@/context/FilterContext"
+import { categories } from "@/data/categories"
+import { cn } from "@/lib/utils"
+import { Check, ChevronDown, Tags } from "lucide-react"
+import { filterButtonClass } from "./DateFilter"
 
-export default function CategoryFilter() {
-
-  const [open, setOpen] = useState(false)
-  const ref = useRef<HTMLDivElement>(null)
-
+export default function CategoryFilter({ className }: { className?: string }) {
   const { categoriesSelected, handleCheckbox } = useFilter()
+  const count = categoriesSelected.length
 
-  useEffect(() => {
-    function handleClickOutside(event: MouseEvent) {
-      if(ref.current && !ref.current.contains(event.target as Node)) {
-        setOpen(false)
-      }
-    }
-
-    document.addEventListener("mousedown", handleClickOutside)
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside)
-    }
-  }, [])
-
-  return(
-
-    <div className="relative" ref={ref}>
-      <FieldLabel className="text-gray-600" >
-        Selecione uma categoria:
-      </FieldLabel>
-      <button
-        onClick={() => setOpen(prev => !prev)}
-        className="flex gap-1 items-center dark:bg-zinc-700 bg-white py-2 px-4 rounded-md border dark:border-zinc-500  border-slate-300 dark:hover:bg-zinc-500 hover:bg-slate-100 transition dark:text-zinc-400 text-gray-600 cursor-pointer shadow"
-      >
-        <FilterIcon size={20}/>
-        Categorias
-      </button>
-
-      <AnimatePresence>
-        {open && 
-          <motion.div
-            key="category-dropdown"
-            initial={{ opacity: 0, scaleY: 0.8 ,y: -5 }}
-            animate={{ opacity: 1, scaleY: 1, y: 0 }}
-            exit={{ opacity: 0, scaleY: 0.8, y: -5 }}
-            transition={{ duration: 0.2, ease: "easeOut" }}
-            style={{ originY: 0 }}
-            className="dark:bg-zinc-700 bg-white p-4 rounded-lg shadow flex flex-col gap-4 absolute z-10"
-          >
-            {categories.filter(cat => cat.id != "entrada").map(cat => {
-              const Icon = cat.icon 
-              const checked = categoriesSelected.includes(cat.id)
-              return (
-                <label
-                  key={cat.id}
-                  className={`flex items-center gap-2 cursor-pointer text-lg ${cat.color}`}
-                >
-                  <input 
-                    type="checkbox" 
-                    className="w-5 h-5" 
-                    onChange={() => handleCheckbox(cat.id)}
-                    checked={checked}
-                  />
-                  {Icon && <Icon size={20} />}
-                  {cat.name}
-                </label>
-              )
-            })}
-          </motion.div>
-          }
-      </AnimatePresence>
-    </div>
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <button type="button" className={cn(filterButtonClass, count > 0 && "border-brand/40", className)}>
+          <Tags className="size-4 text-muted-foreground" />
+          Categorias
+          {count > 0 && (
+            <span className="flex size-5 items-center justify-center rounded-full bg-brand text-[11px] text-white">{count}</span>
+          )}
+          <ChevronDown className="ml-auto size-4 text-muted-foreground" />
+        </button>
+      </PopoverTrigger>
+      <PopoverContent className="w-56 rounded-2xl p-1.5" align="start" sideOffset={8}>
+        {categories.map((cat) => {
+          const Icon = cat.icon
+          const checked = categoriesSelected.includes(cat.id)
+          return (
+            <button
+              key={cat.id}
+              type="button"
+              role="menuitemcheckbox"
+              aria-checked={checked}
+              onClick={() => handleCheckbox(cat.id)}
+              className="flex w-full cursor-pointer items-center gap-2.5 rounded-lg px-2 py-2 text-sm transition hover:bg-muted"
+            >
+              <span className={cn("flex size-7 items-center justify-center rounded-lg", cat.background, cat.color)}>
+                <Icon className="size-4" />
+              </span>
+              {cat.name}
+              <span
+                className={cn(
+                  "ml-auto flex size-4.5 items-center justify-center rounded border transition",
+                  checked && "border-brand bg-brand text-white"
+                )}
+              >
+                {checked && <Check className="size-3" strokeWidth={3} />}
+              </span>
+            </button>
+          )
+        })}
+      </PopoverContent>
+    </Popover>
   )
 }

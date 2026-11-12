@@ -1,19 +1,26 @@
+import { cn } from "@/lib/utils"
 import { XIcon } from "lucide-react"
 
 interface CategoryMarkedProps {
   onClick: () => void
   filterName?: string
-  color?: string
+  className?: string
 }
 
-export default function CategoryMarked({ onClick, filterName, color }: CategoryMarkedProps) {
-  return(
-    <button 
-      className={`flex items-center gap-1 shadow dark:bg-zinc-700 bg-white p-2 rounded-md  border-slate-300 dark:hover:bg-zinc-600  hover:bg-slate-100 transition cursor-pointer`}
+/** Chip de filtro ativo; clicar remove o filtro. */
+export default function CategoryMarked({ onClick, filterName, className }: CategoryMarkedProps) {
+  return (
+    <button
+      type="button"
       onClick={onClick}
+      aria-label={`Remover filtro ${filterName}`}
+      className={cn(
+        "flex h-7 cursor-pointer items-center gap-1 rounded-full border pr-2 pl-3 text-xs font-medium transition hover:bg-muted",
+        className
+      )}
     >
-      <XIcon size={20} className="dark:text-zinc-400 text-gray-600"/>
-      <span className={`${color}`}>{filterName}</span>
+      {filterName}
+      <XIcon className="size-3.5 text-muted-foreground" />
     </button>
   )
 }
