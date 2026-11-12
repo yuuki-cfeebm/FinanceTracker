@@ -1,84 +1,236 @@
 "use client"
-import { useTransaction } from "@/context/TransactionContext"
-import TransactionItem from "./TransactionItem"
-import CategoryFilter from "../filtros/CategoryFilter"
+import EmptyState from "@/components/EmptyState"
+import PageHeader from "@/components/PageHeader"
+import TransactionRow, { TransactionRowSkeleton } from "@/components/TransactionRow"
+import { buttonVariants } from "@/components/ui/button"
 import { useFilter } from "@/context/FilterContext"
-import FilterMarked from "../filtros/CategoryMarked"
-import { categories } from "@/data/categories"
-import { DateFilter } from "../filtros/DateFilter"
+import { useTransaction } from "@/context/TransactionContext"
+import { getCategory } from "@/data/categories"
+import { getTotals } from "@/lib/finance"
+import { formatCurrency, formatDate, formatSignedCurrency } from "@/lib/format"
+import { cn } from "@/lib/utils"
+import { Transaction } from "@/types/transaction"
+import { format, isToday, isYesterday } from "date-fns"
+import { Plus, ReceiptText, Search, SearchX, X } from "lucide-react"
+import Link from "next/link"
+import { useMemo, useState } from "react"
+import CategoryFilter from "../filtros/CategoryFilter"
+import CategoryMarked from "../filtros/CategoryMarked"
+import { DateFilter, rangeLabel } from "../filtros/DateFilter"
 import OrderBy from "../filtros/OrderBy"
-import TitlePage from "@/components/TitlePage"
+
+type TypeFilter = "todas" | "entrada" | "saida"
+
+const typeOptions: { value: TypeFilter; label: string }[] = [
+  { value: "todas", label: "Todas" },
+  { value: "entrada", label: "Entradas" },
+  { value: "saida", label: "Saídas" },
+]
+
+function dayLabel(date: Date) {
+  if (isToday(date)) return "Hoje"
+  if (isYesterday(date)) return "Ontem"
+  const sameYear = date.getFullYear() === new Date().getFullYear()
+  return formatDate(date, sameYear ? { weekday: "short", day: "numeric", month: "long" } : { day: "numeric", month: "long", year: "numeric" })
+}
 
 export default function Historico() {
+  const { transactions, isLoading } = useTransaction()
+  const { orderBy, dateRange, setDateRange, categoriesSelected, handleCheckbox, isInDateRange, clearFilters } = useFilter()
 
-  const { transactions } = useTransaction()
-  const { orderBy, dateRange, categoriesSelected, handleCheckbox, isInDateRange } = useFilter()
+  const [search, setSearch] = useState("")
+  const [typeFilter, setTypeFilter] = useState<TypeFilter>("todas")
 
-  const transactionsFiltered = transactions
-  .filter(transac => {
-    if(categoriesSelected.length === 0) return true
+  const filtered = useMemo(() => {
+    const term = search.trim().toLowerCase()
+    return transactions
+      .filter((t) => typeFilter === "todas" || t.valueType === typeFilter)
+      .filter((t) => {
+        if (categoriesSelected.length === 0) return true
+        return !!t.category && categoriesSelected.includes(t.category.toLowerCase())
+      })
+      .filter((t) => isInDateRange(t.createdAt, dateRange))
+      .filter((t) => {
+        if (!term) return true
+        const category = getCategory(t.valueType === "entrada" ? "entrada" : t.category).name
+        return `${t.description ?? ""} ${category}`.toLowerCase().includes(term)
+      })
+      .sort((a, b) =>
+        orderBy === "recente"
+          ? b.createdAt.getTime() - a.createdAt.getTime()
+          : a.createdAt.getTime() - b.createdAt.getTime()
+      )
+  }, [transactions, typeFilter, categoriesSelected, dateRange, isInDateRange, search, orderBy])
 
-    if(!transac.category) return false
-
-    return categoriesSelected.includes(transac.category)
-  })
-  .filter(transac => 
-    isInDateRange(transac.createdAt, dateRange)
-  ).sort((a, b) => {
-    const timeA = a.createdAt.getTime()
-    const timeB = b.createdAt.getTime()
-
-    if (orderBy === "recente") {
-      return timeB - timeA
+  const groups = useMemo(() => {
+    const map = new Map<string, Transaction[]>()
+    for (const t of filtered) {
+      const key = format(t.createdAt, "yyyy-MM-dd")
+      map.set(key, [...(map.get(key) ?? []), t])
     }
+    return [...map.entries()].map(([key, items]) => ({ key, date: items[0].createdAt, items, totals: getTotals(items) }))
+  }, [filtered])
 
-    if (orderBy === "antigo") {
-      return timeA - timeB
-    }
-    return 0
-  })
+  const totals = getTotals(filtered)
+  const hasFilters = categoriesSelected.length > 0 || !!dateRange?.from || typeFilter !== "todas" || search.trim() !== ""
 
-  return(
-    <div className="flex flex-col items-center">
-      <TitlePage title="Histórico de Transações"/>
-      <div className="w-full flex flex-col gap-4">
-        <div className="flex flex-col">
-          <span className="text-gray-400">Filtros: </span>
-          <div className="flex justify-between items-center">
-              <CategoryFilter />
-            <div className="flex gap-4 items-center">
-              <DateFilter />
-              <OrderBy />
-            </div>
-          </div>
-        </div>
-        <div className="flex flex-col w-100 gap-1"> 
-          <span className="text-gray-400">Filtros Ativos:</span>
-          <div className="flex gap-4">
-            {categoriesSelected.length === 0 ? (
-              <div className="flex items-center gap-1 shadow dark:bg-zinc-700 bg-white p-2 rounded-md border dark:border-zinc-500 border-slate-300 dark:hover:bg-zinc-500 hover:bg-slate-100 transition cursor-pointer dark:text-zinc-400 text-gray-600">Nenhum filtro ativo</div>
-            ):(
-              categoriesSelected.map(catSelec => {
-                const categoryInfo = categories.find(cat => cat.id === catSelec)
-                return(
-                <FilterMarked key={catSelec} filterName={categoryInfo?.name} onClick={() => handleCheckbox(catSelec)} color={categoryInfo?.color}/>
-                )
-              }
-            ))}
-            
-          </div>
-        </div>
-        <div className="flex flex-col gap-6 w-full">
-          {transactionsFiltered.map(transaction => 
-          (  
-            <TransactionItem 
-              key={transaction.id} 
-              transaction={transaction}
+  function resetAll() {
+    clearFilters()
+    setSearch("")
+    setTypeFilter("todas")
+  }
+
+  return (
+    <div className="flex flex-col gap-6">
+      <PageHeader
+        title="Histórico"
+        description={
+          isLoading
+            ? "Carregando transações…"
+            : `${transactions.length} ${transactions.length === 1 ? "transação registrada" : "transações registradas"}`
+        }
+        action={
+          <Link href="/gastos" className={cn(buttonVariants(), "rounded-full")}>
+            <Plus /> Nova transação
+          </Link>
+        }
+      />
+
+      {/* Barra de filtros */}
+      <div className="flex flex-col gap-3 rounded-2xl border bg-card p-3 shadow-xs">
+        <div className="flex flex-col gap-2 lg:flex-row lg:items-center">
+          <label className="relative flex-1">
+            <span className="sr-only">Buscar</span>
+            <Search className="pointer-events-none absolute top-1/2 left-3 size-4 -translate-y-1/2 text-muted-foreground" />
+            <input
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Buscar por descrição ou categoria"
+              className="h-10 w-full rounded-xl border bg-background pr-9 pl-9 text-sm outline-none transition placeholder:text-muted-foreground focus:border-ring focus:ring-3 focus:ring-ring/30"
             />
-          )
-          )}
+            {search && (
+              <button
+                type="button"
+                onClick={() => setSearch("")}
+                aria-label="Limpar busca"
+                className="absolute top-1/2 right-2 -translate-y-1/2 cursor-pointer rounded-md p-1 text-muted-foreground hover:bg-muted"
+              >
+                <X className="size-3.5" />
+              </button>
+            )}
+          </label>
+
+          <div className="grid grid-cols-3 gap-1 rounded-xl bg-muted p-1 lg:w-72" role="radiogroup" aria-label="Tipo">
+            {typeOptions.map((o) => (
+              <button
+                key={o.value}
+                type="button"
+                role="radio"
+                aria-checked={typeFilter === o.value}
+                onClick={() => setTypeFilter(o.value)}
+                className={cn(
+                  "h-8 cursor-pointer rounded-lg text-sm font-medium transition",
+                  typeFilter === o.value ? "bg-card shadow-sm" : "text-muted-foreground hover:text-foreground"
+                )}
+              >
+                {o.label}
+              </button>
+            ))}
+          </div>
         </div>
+
+        <div className="grid grid-cols-2 gap-2 sm:flex sm:flex-wrap">
+          <CategoryFilter />
+          <DateFilter />
+          <OrderBy className="col-span-2 sm:col-span-1" />
+        </div>
+
+        {hasFilters && (
+          <div className="flex flex-wrap items-center gap-2 border-t pt-3">
+            <span className="text-xs text-muted-foreground">Filtros ativos:</span>
+            {typeFilter !== "todas" && (
+              <CategoryMarked filterName={typeFilter === "entrada" ? "Entradas" : "Saídas"} onClick={() => setTypeFilter("todas")} />
+            )}
+            {categoriesSelected.map((id) => (
+              <CategoryMarked key={id} filterName={getCategory(id).name} onClick={() => handleCheckbox(id)} />
+            ))}
+            {dateRange?.from && <CategoryMarked filterName={rangeLabel(dateRange)} onClick={() => setDateRange(undefined)} />}
+            {search.trim() && <CategoryMarked filterName={`“${search.trim()}”`} onClick={() => setSearch("")} />}
+            <button type="button" onClick={resetAll} className="cursor-pointer text-xs font-medium text-brand hover:underline">
+              Limpar tudo
+            </button>
+          </div>
+        )}
       </div>
+
+      {/* Resumo do que está filtrado */}
+      {!isLoading && filtered.length > 0 && (
+        <div className="grid grid-cols-3 divide-x rounded-2xl border bg-card shadow-xs">
+          <MiniStat label="Entradas" value={formatCurrency(totals.income)} className="text-teal-600 dark:text-teal-400" />
+          <MiniStat label="Saídas" value={formatCurrency(totals.expense)} />
+          <MiniStat label="Resultado" value={formatSignedCurrency(totals.balance)} />
+        </div>
+      )}
+
+      {/* Lista */}
+      {isLoading ? (
+        <div className="rounded-2xl border bg-card px-5 shadow-xs">
+          {[0, 1, 2, 3, 4].map((i) => (
+            <TransactionRowSkeleton key={i} />
+          ))}
+        </div>
+      ) : transactions.length === 0 ? (
+        <div className="rounded-2xl border bg-card shadow-xs">
+          <EmptyState
+            icon={ReceiptText}
+            title="Nenhuma transação ainda"
+            description="Tudo o que você registrar aparece aqui, organizado por dia."
+            action={
+              <Link href="/gastos" className={cn(buttonVariants(), "rounded-full")}>
+                <Plus /> Registrar transação
+              </Link>
+            }
+          />
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="rounded-2xl border bg-card shadow-xs">
+          <EmptyState
+            icon={SearchX}
+            title="Nenhum resultado"
+            description="Nenhuma transação bate com os filtros escolhidos. Tente ampliar o período ou remover algum filtro."
+            action={
+              <button type="button" onClick={resetAll} className={cn(buttonVariants({ variant: "outline" }), "cursor-pointer rounded-full")}>
+                Limpar filtros
+              </button>
+            }
+          />
+        </div>
+      ) : (
+        <div className="flex flex-col gap-5">
+          {groups.map((group) => (
+            <section key={group.key} className="flex flex-col gap-2">
+              <div className="flex items-baseline justify-between px-1">
+                <h2 className="text-sm font-semibold first-letter:uppercase">{dayLabel(group.date)}</h2>
+                <span className="text-xs text-muted-foreground tabular-nums">{formatSignedCurrency(group.totals.balance)}</span>
+              </div>
+              <div className="divide-y rounded-2xl border bg-card px-4 shadow-xs sm:px-5">
+                {group.items.map((t) => (
+                  <TransactionRow key={t.id} transaction={t} />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      )}
+    </div>
+  )
+}
+
+function MiniStat({ label, value, className }: { label: string; value: string; className?: string }) {
+  return (
+    <div className="flex flex-col gap-0.5 p-3 sm:p-4">
+      <span className="text-xs text-muted-foreground">{label}</span>
+      <span className={cn("truncate text-sm font-semibold tabular-nums sm:text-base", className)}>{value}</span>
     </div>
   )
 }
