@@ -55,8 +55,8 @@ body {
 
 :root {
   --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --background: oklch(0.982 0.002 247);
+  --foreground: oklch(0.18 0.005 265);
   --card: oklch(1 0 0);
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
@@ -89,9 +89,9 @@ body {
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
+  --background: oklch(0.15 0.004 285);
   --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
+  --card: oklch(0.2 0.005 285);
   --card-foreground: oklch(0.985 0 0);
   --popover: oklch(0.205 0 0);
   --popover-foreground: oklch(0.985 0 0);
@@ -120,6 +120,34 @@ body {
   --sidebar-accent-foreground: oklch(0.985 0 0);
   --sidebar-border: oklch(1 0 0 / 10%);
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+/* Cores semânticas do app (validadas para daltonismo nos dois temas) */
+:root {
+  --income: #0d9488;
+  --expense: #e11d48;
+  --brand: #2563eb;
+  --chart-grid: oklch(0.92 0.004 265);
+  --chart-axis: oklch(0.55 0.01 265);
+}
+
+.dark {
+  --brand: #3b82f6;
+  --chart-grid: oklch(1 0 0 / 8%);
+  --chart-axis: oklch(0.65 0.01 285);
+}
+
+@theme inline {
+  --color-income: var(--income);
+  --color-expense: var(--expense);
+  --color-brand: var(--brand);
+  
+  --breakpoint-xs: 30rem; /* 480px */
+}
+
+.recharts-wrapper *:focus,
+.recharts-surface:focus {
+  outline: none;
 }
 
 @layer base {
