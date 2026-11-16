@@ -71,17 +71,17 @@ export function TransactionProvider({ children }: { children: ReactNode }) {
       })
 
       setTransactions((prev) => [...prev, toTransaction(created)])
-      toast.success("Transaction saved successfully!", { position: "bottom-right" })
+      toast.success("Transação salva com sucesso!", { position: "bottom-right" })
       return true
     } catch (error) {
       console.error(error)
-      toast.error("Error communicating with the server", { position: "bottom-right" })
+      toast.error("Erro ao se comunicar com o servidor", { position: "bottom-right" })
       return false
     }
   }
 
   function cancelTransaction() {
-    toast.success("Transaction canceled!", { position: "bottom-right" })
+    toast.info("Formulário limpo", { position: "bottom-right" })
   }
 
   return (
